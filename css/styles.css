@@ -1,0 +1,239 @@
+body {
+      background: #181824;
+      color: #222;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 40px 0;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px #0006;
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 32px 32px 24px 32px;
+      position: relative;
+    }
+    .mode-toggle {
+      position: absolute;
+      right: 24px;
+    }
+    .mode-toggle button {
+      background: #23243a;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 7px 18px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .mode-toggle button.light {
+      background: #f8f8fa;
+      color: #23243a;
+      border: 1px solid #bbb;
+    }
+    h1 {
+      text-align: left;
+      margin-bottom: 24px;
+      color: #2e6b4c;
+      letter-spacing: 2px;
+      font-size: 2.2rem;
+      font-family: 'Georgia', serif;
+    }
+    .inputs {
+      display: flex;
+      gap: 24px;
+      justify-content: left;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .inputs label {
+      font-weight: 500;
+      margin-right: 8px;
+    }
+    .inputs input {
+      padding: 6px 10px;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+      background: #f8f8fa;
+      color: #222;
+      width: 184px;
+      font-size: 1rem;
+    }
+    .inputs button {
+      background: #2e6b4c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 22px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: background 0.2s;
+    }
+    .inputs button:hover {
+      background: #1e4b34;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 18px;
+    }
+    table {
+      border-collapse: collapse;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 0px;
+      overflow: hidden;
+      min-width: 600px;
+      table-layout: fixed;
+      box-shadow: 0 2px 8px #0002;
+    }
+    th, td {
+      border: 1px solid #888;
+      width: 48px;
+      height: 38px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-family: 'Consolas', monospace;
+      transition: background 0.2s;
+      background: #fff;
+    }
+    th {
+      background: #f8f8fa;
+      color: #222;
+      font-size: 1.1rem;
+      font-weight: 600;
+      height: 38px;
+    }
+    .mem-header {
+      background: #f8f8fa;
+      color: #222;
+      font-weight: bold;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      width: 110px;
+      min-width: 110px;
+      text-align: left;
+      padding-left: 12px;
+    }
+    .row-label {
+      background: #f8f8fa;
+      color: #222;
+      font-weight: bold;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      width: 110px;
+      min-width: 110px;
+      text-align: left;
+      padding-left: 12px;
+    }
+    .mem-cell {
+      background: #fff;
+      color: #222;
+    }
+    .mem-cell.filled {
+      color: #a259e6;
+      font-weight: bold;
+      font-style: italic;
+      background: #fff;
+    }
+    .star {
+      color: #ff4b5c;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .note {
+      color: #222;
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+      margin-left: 6px;
+    }
+    body.dark {
+      background: #181824;
+      color: #f8f8fa;
+    }
+    body.dark .container {
+      background: #23243a;
+      box-shadow: 0 4px 24px #000c;
+    }
+    body.dark h1,
+    body.dark .note {
+      color: #a7a3ff;
+    }
+    body.dark .inputs input {
+      background: #23243a;
+      color: #fff;
+      border: 1px solid #444;
+    }
+    body.dark .inputs button {
+      background: #a7a3ff;
+      color: #23243a;
+    }
+    body.dark .inputs button:hover {
+      background: #7e7bff;
+    }
+    body.dark .inputs button.reset {
+      background: #ff4b5c;
+      color: #fff;
+    }
+    body.dark .inputs button.reset:hover {
+      background: #c82333;
+    }
+    body.dark table,
+    body.dark th,
+    body.dark td {
+      background: #23243a;
+      color: #f8f8fa;
+      border-color: #444;
+    }
+    body.dark th,
+    body.dark .mem-header,
+    body.dark .row-label {
+      background: #23243a;
+      color: #a7a3ff;
+    }
+    body.dark .mem-cell.filled {
+      background: #2e1e3a;
+      color: #a259e6;
+    }
+    body.dark .footer {
+      color: #a7a3ff;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 12px 2vw; }
+      table { min-width: 400px; }
+      th, td { width: 32px; height: 32px; font-size: 1rem; }
+      .mem-header, .row-label { width: 60px; min-width: 60px; padding-left: 4px; }
+    }
+    .footer a {
+      color: #2e6b4c;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .footer {
+        text-align: center;
+        width: 100%;
+        padding: 16px 0 12px 0;
+        color: #2e6b4c;
+        font-size: 1.1rem;
+    }
+    .footer {
+        text-align: center;
+        width: 100vw;
+        padding: 16px 0 12px 0;
+        color: #2e6b4c;
+        font-size: 1.1rem;
+        font-weight: 500;
+        border-top: 1px solid #e0e0e0;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        background: inherit;
+        z-index: 100;
+        box-sizing: border-box;
+    }
