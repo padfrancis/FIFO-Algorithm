@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FIFO Page Replacement Simulator</title>
+  <style>
+    body {
+      background: #181824;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 40px 0;
+      min-height: 100vh;
+    }
+    .container {
+      background: #23243a;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px #0006;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 32px 24px 32px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #a7a3ff;
+      letter-spacing: 2px;
+    }
+    .inputs {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .inputs label {
+      font-weight: 500;
+      margin-right: 8px;
+    }
+    .inputs input {
+      padding: 6px 10px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #23243a;
+      color: #fff;
+      width: 120px;
+      font-size: 1rem;
+    }
+    .inputs button {
+      background: #a7a3ff;
+      color: #23243a;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 22px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: background 0.2s;
+    }
+    .inputs button:hover {
+      background: #7e7bff;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 18px;
+    }
+    table {
+      border-collapse: collapse;
+      margin: 0 auto;
+      background: #23243a;
+      border-radius: 8px;
+      overflow: hidden;
+      min-width: 600px;
+      table-layout: fixed;
+    }
+    th, td {
+      border: 1px solid #444;
+      width: 48px;
+      height: 48px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-family: 'Consolas', monospace;
+      transition: background 0.2s;
+    }
+    th {
+      background: #23243a;
+      color: #a7a3ff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      height: 38px;
+    }
+    .mem-cell {
+      background: #23243a;
+      color: #fff;
+    }
+    .mem-cell.filled {
+      background: #a7a3ff;
+      color: #23243a;
+      font-weight: bold;
+      border: 2px solid #7e7bff;
+    }
+    .fault-row td {
+      height: 32px;
+      font-size: 1.5rem;
+      color: #ff4b5c;
+      background: #23243a;
+      border: none;
+      border-top: 2px solid #444;
+    }
+    .fault-row .star {
+      color: #ff4b5c;
+      font-weight: bold;
+      font-size: 1.7rem;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 1.15rem;
+      color: #a7a3ff;
+      font-weight: 500;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 12px 2vw; }
+      table { min-width: 400px; }
+      th, td { width: 32px; height: 32px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>FIFO Page Replacement Simulator</h1>
+    <div class="inputs">
+      <label>Memory Size:
+        <input type="number" id="memSize" min="1" max="10" value="3">
+      </label>
+      <label>Reference String:
+        <input type="text" id="refString" maxlength="30" placeholder="e.g. BEARABERABAAB">
+      </label>
+      <button onclick="simulateFIFO()">Simulate</button>
+      <button onclick="resetAll()" style="background:#ff4b5c;color:#fff;">Reset</button>
+    </div>
+    <div class="table-container" id="result"></div>
+    <div class="footer" id="faults"></div>
+  </div>
+  <script>
+    function simulateFIFO() {
+      const memSize = parseInt(document.getElementById('memSize').value);
+      let refString = document.getElementById('refString').value.trim().toUpperCase().replace(/\s+/g, '');
+      if (!memSize || !refString) {
+        document.getElementById('result').innerHTML = "<p style='color:#ff4b5c;text-align:center;'>Please enter both memory size and reference string.</p>";
+        document.getElementById('faults').innerHTML = "";
+        return;
+      }
+      // Only allow A-Z, 0-9
+      refString = refString.replace(/[^A-Z0-9]/g, '');
+      const refArr = refString.split('');
+      let memory = [];
+      let pointer = 0;
+      let tableRows = Array.from({length: memSize}, () => []);
+      let faultRow = [];
+      let pageFaults = 0;
+
+      for (let i = 0; i < refArr.length; i++) {
+        const page = refArr[i];
+        if (memory.includes(page)) {
+          // Page hit: just repeat previous memory state
+          for (let j = 0; j < memSize; j++) {
+            tableRows[j][i] = memory[j] ? memory[j] : '';
+          }
+          faultRow[i] = '';
+        } else {
+          // Page fault
+          pageFaults++;
+          if (memory.length < memSize) {
+            memory.push(page);
+          } else {
+            memory[pointer] = page;
+            pointer = (pointer + 1) % memSize;
+          }
+          for (let j = 0; j < memSize; j++) {
+            tableRows[j][i] = memory[j] ? memory[j] : '';
+          }
+          faultRow[i] = '<span class="star">*</span>';
+        }
+      }
+
+      // Build table
+      let html = '<table><tr>';
+      for (let c of refArr) html += `<th>${c}</th>`;
+      html += '</tr>';
+      for (let row = 0; row < memSize; row++) {
+        html += '<tr>';
+        for (let col = 0; col < refArr.length; col++) {
+          const val = tableRows[row][col] || '';
+          // Highlight only if this cell is the newly loaded page (fault)
+          let isFault = faultRow[col] && val === refArr[col];
+          html += `<td class="mem-cell${isFault ? ' filled' : ''}">${val}</td>`;
+        }
+        html += '</tr>';
+      }
+      // Fault row
+      html += '<tr class="fault-row">';
+      for (let col = 0; col < refArr.length; col++) {
+        html += `<td>${faultRow[col] || ''}</td>`;
+      }
+      html += '</tr></table>';
+
+      document.getElementById('result').innerHTML = html;
+      document.getElementById('faults').innerHTML = `Total Page Faults: <span style="color:#ff4b5c;font-weight:bold;">${pageFaults}</span>`;
+    }
+
+    function resetAll() {
+      document.getElementById('memSize').value = 3;
+      document.getElementById('refString').value = '';
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('faults').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
